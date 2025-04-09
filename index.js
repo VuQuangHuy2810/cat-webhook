@@ -10,7 +10,7 @@ app.post("/", (req, res) => {
 
   // Dữ liệu mẫu cho giá mèo
   const catPrices = {
-    "anh lông ngắn ": "2.000.000 - 4.000.000 VND",
+    "anh lông ngắn": "2.000.000 - 4.000.000 VND",
     "xiêm": "1.500.000 - 3.000.000 VND",
     "ba tư": "3.000.000 - 6.000.000 VND",
     "bengal": "5.000.000 - 8.000.000 VND",
