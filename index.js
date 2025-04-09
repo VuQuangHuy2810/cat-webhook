@@ -8,62 +8,66 @@ app.use(bodyParser.json());
 app.post("/", (req, res) => {
   const agent = new WebhookClient({ request: req, response: res });
 
+  // Dữ liệu mẫu
   const catPrices = {
-    "Mèo Anh lông ngắn": "3.000.000 VND",
-    "Mèo Ba Tư": "4.500.000 VND",
-    "Mèo Munchkin": "6.000.000 VND",
-    "Mèo Sphynx": "10.000.000 VND"
+    "anh long ngan": "2.000.000 - 4.000.000 VND",
+    "xiem": "1.500.000 - 3.000.000 VND",
+    "ba tu": "3.000.000 - 6.000.000 VND",
+    "bengal": "5.000.000 - 8.000.000 VND",
+    "muop": "500.000 - 1.000.000 VND"
   };
 
-  // Chào người dùng
-  function welcome(agent) {
-    agent.add("Xin chào! Tôi có thể giúp bạn tư vấn và đặt mua mèo. Bạn muốn biết gì ạ?");
+  function askPrice(agent) {
+    const breed = agent.parameters.catBreed;
+    const price = catPrices[breed];
+    if (price) {
+      agent.add(`Giá của mèo ${breed} là khoảng ${price}.`);
+    } else {
+      agent.add("Hiện tại mình chưa có giá cho giống mèo này.");
+    }
   }
 
-  // Nếu bot không hiểu
-  function fallback(agent) {
-    agent.add("Xin lỗi, tôi chưa hiểu ý bạn. Bạn có thể nói lại được không?");
+  function askAge(agent) {
+    const age = agent.parameters.catAge;
+    if (age) {
+      agent.add(`Bên mình có mèo ${age} tháng tuổi. Bạn muốn biết về giá hay giới tính không?`);
+    } else {
+      agent.add("Bạn muốn mèo bao nhiêu tháng tuổi ạ?");
+    }
   }
 
-  // Lấy giá mèo theo giống
-  function getCatPrice(agent) {
-    const breed = agent.parameters["CatBreed"];
-    const price = catPrices[breed] || "Xin lỗi, giống mèo này hiện chưa có giá trong hệ thống.";
-    agent.add(`Giá của ${breed} là: ${price}`);
+  function askGender(agent) {
+    const gender = agent.parameters.catGender;
+    if (gender === "duc") {
+      agent.add("Bên mình có mèo đực nha bạn. Bạn muốn chốt đơn hay cần tư vấn thêm?");
+    } else if (gender === "cai") {
+      agent.add("Bên mình có mèo cái nha bạn. Bạn muốn chốt đơn hay cần tư vấn thêm?");
+    } else {
+      agent.add("Bạn muốn mèo đực hay cái ạ?");
+    }
   }
 
-  // Lấy tuổi mèo
-  function getCatAge(agent) {
-    const age = agent.parameters["CatAge"];
-    agent.add(`Tuổi của mèo là: ${age} tháng.`);
+  function placeOrder(agent) {
+    const name = agent.parameters.name;
+    const phone = agent.parameters.phone;
+    const address = agent.parameters.address;
+    if (name && phone && address) {
+      agent.add(`Cảm ơn ${name}. Shop sẽ liên hệ qua số ${phone} và giao mèo đến địa chỉ: ${address}. ❤️`);
+    } else {
+      agent.add("Bạn vui lòng cung cấp đầy đủ tên, số điện thoại và địa chỉ để shop chốt đơn nhé!");
+    }
   }
 
-  // Lấy giới tính mèo
-  function getCatGender(agent) {
-    const gender = agent.parameters["CatGender"];
-    agent.add(`Giới tính của mèo là: ${gender}.`);
-  }
-
-  // Chốt đơn hàng
-  function confirmOrder(agent) {
-    const name = agent.parameters["CustomerName"];
-    const phone = agent.parameters["PhoneNumber"];
-    const address = agent.parameters["Address"];
-    agent.add(`Đơn hàng đã được ghi nhận! Cảm ơn ${name}, chúng tôi sẽ liên hệ qua số ${phone} và giao hàng đến địa chỉ: ${address}.`);
-  }
-
-  // Map intent đến function
   let intentMap = new Map();
-  intentMap.set("Default Welcome Intent", welcome);
-  intentMap.set("Default Fallback Intent", fallback);
-  intentMap.set("Hỏi giá mèo", getCatPrice);
-  intentMap.set("Hỏi tuổi mèo", getCatAge);
-  intentMap.set("Hỏi giới tính mèo", getCatGender);
-  intentMap.set("Chốt đơn", confirmOrder);
+  intentMap.set("AskPrice", askPrice);
+  intentMap.set("AskAge", askAge);
+  intentMap.set("AskGender", askGender);
+  intentMap.set("PlaceOrder", placeOrder);
 
   agent.handleRequest(intentMap);
 });
 
-// Khởi chạy server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Webhook is running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 Webhook server is running on port ${PORT}`);
+});
