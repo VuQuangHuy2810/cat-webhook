@@ -21,23 +21,23 @@ app.post("/", (req, res) => {
     const breed = agent.parameters.catBreed;
     const price = catPrices[breed];
     if (price) {
-      agent.add(`Giá của mèo ${breed} là khoảng ${price}.`);
+      agent.add(`Giá của mèo ${CatBreed} là khoảng ${catPrice}.`);
     } else {
       agent.add("Hiện tại mình chưa có giá cho giống mèo này.");
     }
   }
 
   function askAge(agent) {
-    const age = agent.parameters.catAge;
+    const age = agent.parameters.AgeRange;
     if (age) {
-      agent.add(`Bên mình có mèo ${age} tháng tuổi. Bạn muốn biết về giá hay giới tính không?`);
+      agent.add(`Bên mình có mèo ${AgeRange} tháng tuổi. Bạn muốn biết về giá hay giới tính không?`);
     } else {
       agent.add("Bạn muốn mèo bao nhiêu tháng tuổi ạ?");
     }
   }
 
   function askGender(agent) {
-    const gender = agent.parameters.catGender;
+    const gender = agent.parameters.CatGender;
     if (gender === "duc") {
       agent.add("Bên mình có mèo đực nha bạn. Bạn muốn chốt đơn hay cần tư vấn thêm?");
     } else if (gender === "cai") {
@@ -50,9 +50,9 @@ app.post("/", (req, res) => {
   function placeOrder(agent) {
     const name = agent.parameters.name;
     const phone = agent.parameters.phone;
-    const address = agent.parameters.address;
+    const address = agent.parameters.Address;
     if (name && phone && address) {
-      agent.add(`Cảm ơn ${name}. Shop sẽ liên hệ qua số ${phone} và giao mèo đến địa chỉ: ${address}. ❤️`);
+      agent.add(`Cảm ơn ${name}. Shop sẽ liên hệ qua số ${phone} và giao mèo đến địa chỉ: ${Address}. ❤️`);
     } else {
       agent.add("Bạn vui lòng cung cấp đầy đủ tên, số điện thoại và địa chỉ để shop chốt đơn nhé!");
     }
@@ -69,5 +69,5 @@ app.post("/", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Webhook server is running on port ${PORT}`);
+  console.log(`Webhook server is running on port ${100000}`);
 });
