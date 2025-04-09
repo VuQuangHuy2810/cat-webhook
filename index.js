@@ -15,37 +15,44 @@ app.post("/", (req, res) => {
     "Mèo Sphynx": "10.000.000 VND"
   };
 
+  // Chào người dùng
   function welcome(agent) {
-    agent.add("Xin chào! Tôi có thể giúp bạn tư vấn và đặt mua mèo. Bạn cần gì?");
+    agent.add("Xin chào! Tôi có thể giúp bạn tư vấn và đặt mua mèo. Bạn muốn biết gì ạ?");
   }
 
+  // Nếu bot không hiểu
   function fallback(agent) {
-    agent.add("Tôi chưa hiểu ý bạn. Bạn có thể hỏi lại không?");
+    agent.add("Xin lỗi, tôi chưa hiểu ý bạn. Bạn có thể nói lại được không?");
   }
 
+  // Lấy giá mèo theo giống
   function getCatPrice(agent) {
-    const breed = agent.parameters["meo_giong"];
-    const price = catPrices[breed] || "Giống mèo này hiện chưa có giá.";
+    const breed = agent.parameters["CatBreed"];
+    const price = catPrices[breed] || "Xin lỗi, giống mèo này hiện chưa có giá trong hệ thống.";
     agent.add(`Giá của ${breed} là: ${price}`);
   }
 
+  // Lấy tuổi mèo
   function getCatAge(agent) {
-    const age = agent.parameters["meo_tuoi"];
-    agent.add(`Tuổi của mèo là ${age} tháng.`);
+    const age = agent.parameters["CatAge"];
+    agent.add(`Tuổi của mèo là: ${age} tháng.`);
   }
 
+  // Lấy giới tính mèo
   function getCatGender(agent) {
-    const gender = agent.parameters["meo_gioitinh"];
-    agent.add(`Giới tính mèo là: ${gender}`);
+    const gender = agent.parameters["CatGender"];
+    agent.add(`Giới tính của mèo là: ${gender}.`);
   }
 
+  // Chốt đơn hàng
   function confirmOrder(agent) {
-    const name = agent.parameters["ten"];
-    const phone = agent.parameters["sdt"];
-    const address = agent.parameters["diachi"];
-    agent.add(`Đơn hàng đã được ghi nhận! Cảm ơn ${name}, chúng tôi sẽ liên hệ số ${phone} và giao hàng đến: ${address}.`);
+    const name = agent.parameters["CustomerName"];
+    const phone = agent.parameters["PhoneNumber"];
+    const address = agent.parameters["Address"];
+    agent.add(`Đơn hàng đã được ghi nhận! Cảm ơn ${name}, chúng tôi sẽ liên hệ qua số ${phone} và giao hàng đến địa chỉ: ${address}.`);
   }
 
+  // Map intent đến function
   let intentMap = new Map();
   intentMap.set("Default Welcome Intent", welcome);
   intentMap.set("Default Fallback Intent", fallback);
@@ -57,5 +64,6 @@ app.post("/", (req, res) => {
   agent.handleRequest(intentMap);
 });
 
+// Khởi chạy server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Webhook is running on port ${PORT}`));
