@@ -50,6 +50,27 @@ app.post("/", (req, res) => {
   function handleUnexpectedUserInfo(agent) {
     agent.add("Tôi chưa hiểu bạn muốn làm gì với thông tin này. Bạn có muốn đặt mua mèo không?");
   }
+  function confirmOrder(agent) {
+    const name = agent.parameters["name"];
+    const phone = agent.parameters["phone"];
+    const address = agent.parameters["address"];
+  
+    // Kiểm tra context xem người dùng đã chọn giống chưa
+    const breed = agent.context.get("breed-followup")?.parameters?.catBreed;
+    const age = agent.context.get("age-followup")?.parameters?.catAge;
+    const gender = agent.context.get("gender-followup")?.parameters?.catGender;
+  
+    if (!breed || !age || !gender) {
+      agent.add("Bạn vui lòng chọn giống mèo, tuổi và giới tính trước khi chốt đơn nhé. 🐾");
+      return;
+    }
+  
+    if (name && phone && address) {
+      agent.add(`Đơn hàng đã được ghi nhận! Cảm ơn ${name}, chúng tôi sẽ liên hệ số ${phone} và giao mèo đến: ${address}. 🐱`);
+    } else {
+      agent.add("Bạn vui lòng cung cấp đầy đủ tên, số điện thoại và địa chỉ để chốt đơn nhé.");
+    }
+  }
   
   
 
@@ -68,5 +89,5 @@ app.post("/", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Webhook server is running on port ${100000}`);
+  console.log(`Webhook server is running on port ${100000}`);
 });
