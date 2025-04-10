@@ -1,4 +1,3 @@
-// webhook.js
 const express = require("express");
 const bodyParser = require("body-parser");
 const { WebhookClient } = require("dialogflow-fulfillment");
@@ -31,6 +30,7 @@ app.post("/", (req, res) => {
     const breed = agent.parameters["CatBreed"];
     if (breed) {
       orderContext.breed = breed;
+      console.log("Chọn giống:", breed);
       agent.add(`Bên mình có mèo ${breed} nha. Bạn muốn hỏi giá, tuổi hay giới tính nè?`);
     } else {
       agent.add("Bạn muốn giống mèo nào vậy ạ?");
@@ -50,20 +50,20 @@ app.post("/", (req, res) => {
   function getCatAge(agent) {
     let age = agent.parameters["age"];
     console.log("Age received:", age);
-  
-    // Nếu age là mảng, lấy phần tử đầu tiên
+
     if (Array.isArray(age)) {
       age = age[0];
     }
-  
-    // Kiểm tra nếu age tồn tại và không rỗng
+
     if (age && typeof age === "string" && age.trim() !== "") {
       orderContext.age = age;
+      console.log("Chọn tuổi:", age);
       agent.add(`Bên mình có mèo ${age} nha. Bạn muốn hỏi thêm gì không?`);
     } else {
       agent.add("Bạn muốn mua mèo bao nhiêu tháng tuổi ạ?");
     }
   }
+
   function getPetCareAdvice(agent) {
     agent.add("Dưới đây là một số mẹo chăm sóc mèo cơ bản:\n\n" +
       "1. 🥣 Cho mèo ăn đúng bữa, tránh cho ăn đồ ngọt và xương nhỏ.\n" +
@@ -73,17 +73,18 @@ app.post("/", (req, res) => {
       "5. 🧸 Dành thời gian chơi với mèo, tạo không gian vận động.\n\n" +
       "Bạn cần tư vấn thêm gì nữa không ạ?");
   }
-  
 
   function getCatGender(agent) {
     const gender = agent.parameters["catgender"];
     if (gender) {
       orderContext.gender = gender;
+      console.log("Chọn giới tính:", gender);
       agent.add(`Bên mình có mèo ${gender} nha. Bạn muốn đặt mua luôn không?`);
     } else {
       agent.add("Bạn muốn mua mèo đực hay cái ạ?");
     }
   }
+
   function askUserInfo(agent) {
     if (!orderContext.breed || !orderContext.age || !orderContext.gender) {
       agent.add("Bạn chưa chọn đủ thông tin mèo (giống, tuổi, giới tính) ạ. Vui lòng chọn trước rồi hãy đặt đơn nhé!");
@@ -91,25 +92,23 @@ app.post("/", (req, res) => {
     }
     agent.add("Tuyệt vời! Bạn vui lòng cho mình biết tên, số điện thoại và địa chỉ để mình chốt đơn nhé!");
   }
-  
-  
+
   function confirmOrder(agent) {
     const name = agent.parameters["name"];
     const phone = agent.parameters["phone"];
     const address = agent.parameters["address"];
 
-
     if (name && phone && address) {
       agent.add(`Cảm ơn ${name}. Shop sẽ liên hệ qua số ${phone} và giao mèo ${orderContext.breed}, ${orderContext.age}, ${orderContext.gender} đến địa chỉ: ${address}. ❤️`);
+      console.log("Đơn hàng hoàn tất:", { name, phone, address, ...orderContext });
+
+      // Reset sau khi đặt hàng
+      orderContext = {};
     } else {
       agent.add("Bạn vui lòng cung cấp đầy đủ tên, số điện thoại và địa chỉ để mình chốt đơn nhé.");
     }
   }
 
-  if (!orderContext.breed || !orderContext.age || !orderContext.gender) {
-    agent.add("Bạn chưa chọn đủ thông tin mèo (giống, tuổi, giới tính) ạ. Vui lòng chọn trước rồi hãy đặt đơn nhé!");
-    return;
-  }
   function handleUnexpectedUserInfo(agent) {
     agent.add("Bạn chưa chọn mèo mà đã gửi thông tin. Vui lòng chọn giống mèo, tuổi và giới tính trước nhé 🐱");
   }
@@ -126,9 +125,6 @@ app.post("/", (req, res) => {
   intentMap.set("PetCareAdvice", getPetCareAdvice);
   intentMap.set("ConfirmBuyYes", askUserInfo);
   intentMap.set("AskUserInfo", askUserInfo);
-
-
-
 
   agent.handleRequest(intentMap);
 });
