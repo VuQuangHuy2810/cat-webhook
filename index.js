@@ -125,6 +125,8 @@ app.post("/", (req, res) => {
   intentMap.set("UnexpectedUserInfo", handleUnexpectedUserInfo);
   intentMap.set("PetCareAdvice", getPetCareAdvice);
   intentMap.set("ConfirmBuyYes", askUserInfo);
+  intentMap.set("AskUserInfo", askUserInfo);
+
 
 
 
