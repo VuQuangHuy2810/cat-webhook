@@ -84,7 +84,10 @@ app.post("/", (req, res) => {
       agent.add("Bạn muốn mua mèo đực hay cái ạ?");
     }
   }
-
+  function askUserInfo(agent) {
+    agent.add("Tuyệt vời! Bạn vui lòng cho mình biết tên, số điện thoại và địa chỉ để mình chốt đơn nhé!");
+  }
+  
   function confirmOrder(agent) {
     const name = agent.parameters["name"];
     const phone = agent.parameters["phone"];
@@ -116,6 +119,8 @@ app.post("/", (req, res) => {
   intentMap.set("PlaceOrder", confirmOrder);
   intentMap.set("UnexpectedUserInfo", handleUnexpectedUserInfo);
   intentMap.set("PetCareAdvice", getPetCareAdvice);
+  intentMap.set("ConfirmBuyYes", askUserInfo);
+
 
 
   agent.handleRequest(intentMap);
