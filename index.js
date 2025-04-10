@@ -64,6 +64,15 @@ app.post("/", (req, res) => {
       agent.add("Bạn muốn mua mèo bao nhiêu tháng tuổi ạ?");
     }
   }
+  function getPetCareAdvice(agent) {
+    agent.add("Dưới đây là một số mẹo chăm sóc mèo cơ bản:\n\n" +
+      "1. 🥣 Cho mèo ăn đúng bữa, tránh cho ăn đồ ngọt và xương nhỏ.\n" +
+      "2. 🚰 Luôn để nước sạch cho mèo uống.\n" +
+      "3. 🧼 Vệ sinh khay cát và nơi ở thường xuyên.\n" +
+      "4. 🐾 Tiêm phòng và tẩy giun định kỳ.\n" +
+      "5. 🧸 Dành thời gian chơi với mèo, tạo không gian vận động.\n\n" +
+      "Bạn cần tư vấn thêm gì nữa không ạ?");
+  }
   
 
   function getCatGender(agent) {
@@ -106,6 +115,8 @@ app.post("/", (req, res) => {
   intentMap.set("AskGender", getCatGender);
   intentMap.set("PlaceOrder", confirmOrder);
   intentMap.set("UnexpectedUserInfo", handleUnexpectedUserInfo);
+  intentMap.set("PetCareAdvice", getPetCareAdvice);
+
 
   agent.handleRequest(intentMap);
 });
