@@ -85,18 +85,19 @@ app.post("/", (req, res) => {
     }
   }
   function askUserInfo(agent) {
+    if (!orderContext.breed || !orderContext.age || !orderContext.gender) {
+      agent.add("Bạn chưa chọn đủ thông tin mèo (giống, tuổi, giới tính) ạ. Vui lòng chọn trước rồi hãy đặt đơn nhé!");
+      return;
+    }
     agent.add("Tuyệt vời! Bạn vui lòng cho mình biết tên, số điện thoại và địa chỉ để mình chốt đơn nhé!");
   }
+  
   
   function confirmOrder(agent) {
     const name = agent.parameters["name"];
     const phone = agent.parameters["phone"];
     const address = agent.parameters["address"];
 
-    if (!orderContext.breed || !orderContext.age || !orderContext.gender) {
-      agent.add("Bạn chưa chọn đủ thông tin mèo (giống, tuổi, giới tính) ạ. Vui lòng chọn trước rồi hãy đặt đơn nhé!");
-      return;
-    }
 
     if (name && phone && address) {
       agent.add(`Cảm ơn ${name}. Shop sẽ liên hệ qua số ${phone} và giao mèo ${orderContext.breed}, ${orderContext.age}, ${orderContext.gender} đến địa chỉ: ${address}. ❤️`);
@@ -105,6 +106,10 @@ app.post("/", (req, res) => {
     }
   }
 
+  if (!orderContext.breed || !orderContext.age || !orderContext.gender) {
+    agent.add("Bạn chưa chọn đủ thông tin mèo (giống, tuổi, giới tính) ạ. Vui lòng chọn trước rồi hãy đặt đơn nhé!");
+    return;
+  }
   function handleUnexpectedUserInfo(agent) {
     agent.add("Bạn chưa chọn mèo mà đã gửi thông tin. Vui lòng chọn giống mèo, tuổi và giới tính trước nhé 🐱");
   }
