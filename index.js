@@ -47,6 +47,11 @@ app.post("/", (req, res) => {
     const address = agent.parameters["address"];
     agent.add(`Cảm ơn ${name}. Shop sẽ liên hệ qua số ${phone} và giao mèo đến địa chỉ: ${address}. ❤️`);
   }
+  function handleUnexpectedUserInfo(agent) {
+    agent.add("Tôi chưa hiểu bạn muốn làm gì với thông tin này. Bạn có muốn đặt mua mèo không?");
+  }
+  
+  
 
   let intentMap = new Map();
   intentMap.set("Default Welcome Intent", welcome);
@@ -55,6 +60,8 @@ app.post("/", (req, res) => {
   intentMap.set("AskAge", getCatAge);
   intentMap.set("AskGender", getCatGender);
   intentMap.set("PlaceOrder", confirmOrder);
+  intentMap.set("UnexpectedUserInfo", handleUnexpectedUserInfo);
+
 
   agent.handleRequest(intentMap);
 });
