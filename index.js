@@ -63,6 +63,66 @@ app.post("/", (req, res) => {
       agent.add("Bạn muốn mua mèo bao nhiêu tháng tuổi ạ?");
     }
   }
+  function askVaccinationIncluded(agent) {
+    agent.add("Giá đã bao gồm chi phí tiêm ngừa cơ bản cho mèo rồi ạ 🐾.");
+  }
+  
+  function askPromotion(agent) {
+    agent.add("Hiện tại bên shop đang có chương trình giảm 10% cho đơn hàng từ 2 bé trở lên và tặng kèm đồ chơi 🧸.");
+  }
+  
+  function askDiscountForTwo(agent) {
+    agent.add("Nếu bạn mua 2 bé sẽ được giảm giá 10% trên tổng hóa đơn nha 🐱🐱.");
+  }
+  
+  function askVaccinatedStatus(agent) {
+    agent.add("Tất cả mèo bên mình đều đã được tiêm ngừa trước khi giao đến tay khách hàng ạ 💉.");
+  }
+  
+  function askVaccinationBook(agent) {
+    agent.add("Có ạ! Mỗi bé sẽ có sổ tiêm riêng, ghi rõ ngày tiêm và loại vắc-xin ✅.");
+  }
+  
+  function askCatHealth(agent) {
+    agent.add("Bên mình cam kết mèo khỏe mạnh, không bệnh nền. Có thể kiểm tra trước khi nhận 🩺.");
+  }
+  
+  function askShippingAvailability(agent) {
+    agent.add("Dạ có ạ! Bên mình hỗ trợ giao mèo tận nơi toàn quốc qua các đơn vị uy tín 🚚.");
+  }
+  
+  function askShippingFee(agent) {
+    agent.add("Phí vận chuyển tùy theo địa chỉ, trong TP.HCM khoảng 30.000 - 50.000đ. Ngoại tỉnh sẽ báo cụ thể khi bạn cung cấp địa chỉ nhé 🗺️.");
+  }
+  
+  function askCheckBeforeAccept(agent) {
+    agent.add("Dạ bạn có thể kiểm tra mèo trước khi nhận hàng để đảm bảo đúng yêu cầu nha 🕵️‍♂️.");
+  }
+  
+  function askPaymentMethods(agent) {
+    agent.add("Shop chấp nhận thanh toán tiền mặt, chuyển khoản, và ví điện tử (Momo, ZaloPay, v.v.) 💳.");
+  }
+  
+  function askWarranty(agent) {
+    agent.add("Nếu mèo bị bệnh trong 7 ngày đầu (do lỗi bên shop), bạn có thể đổi hoặc hoàn tiền theo chính sách bảo hành 🛡️.");
+  }
+  
+  function askShopLocation(agent) {
+    agent.add("Shop mình ở Quận 10, TP.HCM. Có thể ghé trực tiếp để xem bé nhé 🏠.");
+  }
+  
+  function askWorkingHours(agent) {
+    agent.add("Shop mở cửa từ 9:00 sáng đến 8:00 tối mỗi ngày, kể cả cuối tuần ạ 🕘.");
+  }
+  
+  function askContactInfo(agent) {
+    agent.add("Bạn có thể liên hệ qua số 0933 701 000 (có Zalo luôn nha) ☎️.");
+  }
+  
+  function askVisitInPerson(agent) {
+    agent.add("Hoàn toàn được ạ! Bạn có thể đến trực tiếp shop để xem và chọn mèo ưng ý nhất 🐾.");
+  }
+  
 
   function getPetCareAdvice(agent) {
     agent.add("Dưới đây là một số mẹo chăm sóc mèo cơ bản:\n\n" +
@@ -125,6 +185,22 @@ app.post("/", (req, res) => {
   intentMap.set("PetCareAdvice", getPetCareAdvice);
   intentMap.set("ConfirmBuyYes", askUserInfo);
   intentMap.set("AskUserInfo", askUserInfo);
+  intentMap.set("AskVaccinationIncluded", askVaccinationIncluded);
+  intentMap.set("AskPromotion", askPromotion);
+  intentMap.set("AskDiscountForTwo", askDiscountForTwo);
+  intentMap.set("AskVaccinatedStatus", askVaccinatedStatus);
+  intentMap.set("AskVaccinationBook", askVaccinationBook);
+  intentMap.set("AskCatHealth", askCatHealth);
+  intentMap.set("AskShippingAvailability", askShippingAvailability);
+  intentMap.set("AskShippingFee", askShippingFee);
+  intentMap.set("AskCheckBeforeAccept", askCheckBeforeAccept);
+  intentMap.set("AskPaymentMethods", askPaymentMethods);
+  intentMap.set("AskWarranty", askWarranty);
+  intentMap.set("AskShopLocation", askShopLocation);
+  intentMap.set("AskWorkingHours", askWorkingHours);
+  intentMap.set("AskContactInfo", askContactInfo);
+  intentMap.set("AskVisitInPerson", askVisitInPerson);
+
 
   agent.handleRequest(intentMap);
 });
