@@ -5,17 +5,18 @@ const { WebhookClient } = require("dialogflow-fulfillment");
 const app = express();
 app.use(bodyParser.json());
 
+const catPrices = {
+  "anh lông ngắn": "2.000.000 - 4.000.000 VND",
+  "xiêm": "1.500.000 - 3.000.000 VND",
+  "ba tư": "3.000.000 - 6.000.000 VND",
+  "bengal": "5.000.000 - 8.000.000 VND",
+  "mướp": "500.000 - 1.000.000 VND"
+};
+
+let orderContext = {};
+
 app.post("/", (req, res) => {
   const agent = new WebhookClient({ request: req, response: res });
-
-  // Giá mèo theo giống
-  const catPrices = {
-    "anh lông ngắn": "2.000.000 - 4.000.000 VND",
-    "xiêm": "1.500.000 - 3.000.000 VND",
-    "ba tư": "3.000.000 - 6.000.000 VND",
-    "bengal": "5.000.000 - 8.000.000 VND",
-    "mướp": "500.000 - 1.000.000 VND"
-  };
 
   function welcome(agent) {
     agent.add("Chào bạn! Mình là chatbot tư vấn mèo cưng 🐱 Bạn muốn tìm giống mèo nào ạ?");
@@ -25,23 +26,44 @@ app.post("/", (req, res) => {
     agent.add("Xin lỗi, mình chưa hiểu ý bạn. Bạn có thể nói lại không?");
   }
 
+  function getCatBreed(agent) {
+    const breed = agent.parameters["catBreed"];
+    if (breed) {
+      orderContext.breed = breed;
+      agent.add(`Bạn chọn giống mèo ${breed} nha. Bạn muốn hỏi giá, tuổi hay giới tính nè?`);
+    } else {
+      agent.add("Bạn muốn giống mèo nào vậy ạ?");
+    }
+  }
+
   function getCatPrice(agent) {
-    const breed = agent.parameters["CatBreed"];
-    const price = catPrices[breed?.toLowerCase()] || "Hiện mình chưa có giá cho giống mèo này.";
-    agent.context.set({ name: "breed-followup", lifespan: 5, parameters: { catBreed: breed } });
-    agent.add(`Giá của mèo ${breed} là khoảng: ${price}`);
+    const breed = agent.parameters["catBreed"] || orderContext.breed;
+    if (breed && catPrices[breed]) {
+      orderContext.breed = breed;
+      agent.add(`Giá của mèo ${breed} là: ${catPrices[breed]}`);
+    } else {
+      agent.add("Hiện mình chưa có giá cho giống mèo này hoặc bạn chưa chọn giống ạ.");
+    }
   }
 
   function getCatAge(agent) {
     const age = agent.parameters["AgeRange"];
-    agent.context.set({ name: "age-followup", lifespan: 5, parameters: { catAge: age } });
-    agent.add(`Bên mình có mèo ${age} tháng tuổi. Bạn muốn biết về giá hay giới tính không?`);
+    if (age) {
+      orderContext.age = age;
+      agent.add(`Bên mình có mèo ${age} tuổi nha. Bạn muốn hỏi thêm gì không?`);
+    } else {
+      agent.add("Bạn muốn mua mèo bao nhiêu tháng tuổi ạ?");
+    }
   }
 
   function getCatGender(agent) {
     const gender = agent.parameters["CatGender"];
-    agent.context.set({ name: "gender-followup", lifespan: 5, parameters: { catGender: gender } });
-    agent.add(`Bên mình có mèo ${gender} nha bạn. Bạn muốn chốt đơn hay cần tư vấn thêm gì nữa không?`);
+    if (gender) {
+      orderContext.gender = gender;
+      agent.add(`Bên mình có mèo ${gender} nha. Bạn muốn đặt mua luôn không?`);
+    } else {
+      agent.add("Bạn muốn mua mèo đực hay cái ạ?");
+    }
   }
 
   function confirmOrder(agent) {
@@ -49,34 +71,36 @@ app.post("/", (req, res) => {
     const phone = agent.parameters["phone"];
     const address = agent.parameters["address"];
 
-    const breed = agent.context.get("breed-followup")?.parameters?.catBreed;
-    const age = agent.context.get("age-followup")?.parameters?.catAge;
-    const gender = agent.context.get("gender-followup")?.parameters?.catGender;
-
-    if (!breed || !age || !gender) {
-      agent.add("Bạn chưa chọn mèo ạ. Vui lòng cung cấp giống, tuổi và giới tính của mèo trước khi đặt hàng nha 🐾");
+    if (!orderContext.breed || !orderContext.age || !orderContext.gender) {
+      agent.add("Bạn chưa chọn đủ thông tin mèo (giống, tuổi, giới tính) ạ. Vui lòng chọn trước rồi hãy đặt đơn nhé!");
       return;
     }
 
     if (name && phone && address) {
-      agent.add(`Đơn hàng đã được ghi nhận! Cảm ơn ${name}, chúng tôi sẽ liên hệ số ${phone} và giao mèo đến: ${address}. 🐱`);
+      agent.add(`Cảm ơn ${name}. Shop sẽ liên hệ qua số ${phone} và giao mèo ${orderContext.breed}, ${orderContext.age}, ${orderContext.gender} đến địa chỉ: ${address}. ❤️`);
     } else {
-      agent.add("Bạn vui lòng cung cấp đầy đủ tên, số điện thoại và địa chỉ để chốt đơn nhé.");
+      agent.add("Bạn vui lòng cung cấp đầy đủ tên, số điện thoại và địa chỉ để mình chốt đơn nhé.");
     }
+  }
+
+  function handleUnexpectedUserInfo(agent) {
+    agent.add("Bạn chưa chọn mèo mà đã gửi thông tin. Vui lòng chọn giống mèo, tuổi và giới tính trước nhé 🐱");
   }
 
   let intentMap = new Map();
   intentMap.set("Default Welcome Intent", welcome);
   intentMap.set("Default Fallback Intent", fallback);
+  intentMap.set("AskBreed", getCatBreed);
   intentMap.set("AskPrice", getCatPrice);
   intentMap.set("AskAge", getCatAge);
   intentMap.set("AskGender", getCatGender);
   intentMap.set("PlaceOrder", confirmOrder);
+  intentMap.set("UnexpectedUserInfo", handleUnexpectedUserInfo);
 
   agent.handleRequest(intentMap);
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`Webhook server is running on port ${PORT}`);
 });
