@@ -48,7 +48,7 @@ app.post("/", (req, res) => {
   }
 
   function getCatAge(agent) {
-    let age = agent.parameters["AgeRange"];
+    let age = agent.parameters["age"];
     console.log("Age received:", age);
   
     // Nếu age là mảng, lấy phần tử đầu tiên
