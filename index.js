@@ -27,7 +27,7 @@ app.post("/", (req, res) => {
   }
 
   function getCatBreed(agent) {
-    const breed = agent.parameters["catBreed"];
+    const breed = agent.parameters["CatBreed"];
     if (breed) {
       orderContext.breed = breed;
       agent.add(`Bạn chọn giống mèo ${breed} nha. Bạn muốn hỏi giá, tuổi hay giới tính nè?`);
@@ -37,7 +37,7 @@ app.post("/", (req, res) => {
   }
 
   function getCatPrice(agent) {
-    const breed = agent.parameters["catBreed"] || orderContext.breed;
+    const breed = agent.parameters["CatBreed"] || orderContext.breed;
     if (breed && catPrices[breed]) {
       orderContext.breed = breed;
       agent.add(`Giá của mèo ${breed} là: ${catPrices[breed]}`);
