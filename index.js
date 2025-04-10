@@ -1,3 +1,4 @@
+// webhook.js
 const express = require("express");
 const bodyParser = require("body-parser");
 const { WebhookClient } = require("dialogflow-fulfillment");
@@ -47,14 +48,23 @@ app.post("/", (req, res) => {
   }
 
   function getCatAge(agent) {
-    const age = agent.parameters["AgeRange"];
-    if (age) {
+    let age = agent.parameters["AgeRange"];
+    console.log("Age received:", age);
+  
+    // Nếu age là mảng, lấy phần tử đầu tiên
+    if (Array.isArray(age)) {
+      age = age[0];
+    }
+  
+    // Kiểm tra nếu age tồn tại và không rỗng
+    if (age && typeof age === "string" && age.trim() !== "") {
       orderContext.age = age;
-      agent.add(`Bên mình có mèo ${age} tuổi nha. Bạn muốn hỏi thêm gì không?`);
+      agent.add(`Bên mình có mèo ${age} nha. Bạn muốn hỏi thêm gì không?`);
     } else {
       agent.add("Bạn muốn mua mèo bao nhiêu tháng tuổi ạ?");
     }
   }
+  
 
   function getCatGender(agent) {
     const gender = agent.parameters["CatGender"];
