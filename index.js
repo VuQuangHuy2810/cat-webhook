@@ -67,7 +67,7 @@ app.post("/", (req, res) => {
   
 
   function getCatGender(agent) {
-    const gender = agent.parameters["CatGender"];
+    const gender = agent.parameters["catgender"];
     if (gender) {
       orderContext.gender = gender;
       agent.add(`Bên mình có mèo ${gender} nha. Bạn muốn đặt mua luôn không?`);
