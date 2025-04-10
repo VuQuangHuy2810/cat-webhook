@@ -31,7 +31,7 @@ app.post("/", (req, res) => {
     const breed = agent.parameters["CatBreed"];
     if (breed) {
       orderContext.breed = breed;
-      agent.add(`Bạn chọn giống mèo ${breed} nha. Bạn muốn hỏi giá, tuổi hay giới tính nè?`);
+      agent.add(`Bên mình có mèo ${breed} nha. Bạn muốn hỏi giá, tuổi hay giới tính nè?`);
     } else {
       agent.add("Bạn muốn giống mèo nào vậy ạ?");
     }
